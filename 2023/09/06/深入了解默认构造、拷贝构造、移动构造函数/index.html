@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>深入了解默认构造、拷贝构造、移动构造函数 | zhangjiwei 的 blog</title><meta name="author" content="zhangjiwei"><meta name="copyright" content="zhangjiwei"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="默认构造，拷贝构造，移动构造函数背景当我们自己定义class时不可避免接触到构造函数，如果我们自己定义了构造函数，那么当我们实例化对象时候就会调用相应的构造函数，但是如果我们没有定义自己的构造函数时候，编译器会自动为我们生成一个默认构造函数，这个构造函数的功能是怎么样的呢？同理，默认的拷贝构造和移动构造是怎么样的？ 名词解释本文须知如下名词含义: 隐式声明： 用户没有声明，编译器声明。平凡(tri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入了解默认构造、拷贝构造、移动构造函数">
+<meta property="og:url" content="http://example.com/2023/09/06/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E3%80%81%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="zhangjiwei 的 blog">
+<meta property="og:description" content="默认构造，拷贝构造，移动构造函数背景当我们自己定义class时不可避免接触到构造函数，如果我们自己定义了构造函数，那么当我们实例化对象时候就会调用相应的构造函数，但是如果我们没有定义自己的构造函数时候，编译器会自动为我们生成一个默认构造函数，这个构造函数的功能是怎么样的呢？同理，默认的拷贝构造和移动构造是怎么样的？ 名词解释本文须知如下名词含义: 隐式声明： 用户没有声明，编译器声明。平凡(tri">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-09-06T14:36:00.000Z">
+<meta property="article:modified_time" content="2023-09-06T14:36:17.984Z">
+<meta property="article:author" content="zhangjiwei">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/09/06/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E3%80%81%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深入了解默认构造、拷贝构造、移动构造函数',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-09-06 10:36:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="zhangjiwei 的 blog"><span class="site-name">zhangjiwei 的 blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">深入了解默认构造、拷贝构造、移动构造函数</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-09-06T14:36:00.000Z" title="Created 2023-09-06 10:36:00">2023-09-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-09-06T14:36:17.984Z" title="Updated 2023-09-06 10:36:17">2023-09-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="深入了解默认构造、拷贝构造、移动构造函数"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="默认构造，拷贝构造，移动构造函数"><a href="#默认构造，拷贝构造，移动构造函数" class="headerlink" title="默认构造，拷贝构造，移动构造函数"></a>默认构造，拷贝构造，移动构造函数</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>当我们自己定义class时不可避免接触到构造函数，如果我们自己定义了构造函数，那么当我们实例化对象时候就会调用相应的构造函数，但是如果我们没有定义自己的构造函数时候，编译器会自动为我们生成一个默认构造函数，这个构造函数的功能是怎么样的呢？同理，默认的拷贝构造和移动构造是怎么样的？</p>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>本文须知如下名词含义:</p>
+<p><strong>隐式声明：</strong> 用户没有声明，编译器声明。<br><strong>平凡(trivial)：</strong> 编译器不会添加代码，编译器什么也不做<br><strong>非平凡（no-trivial）的&#x2F;&#x2F;隐式定义：</strong> 编译器会根据需要添加代码，生成函数</p>
+<p>上述三个名词的解释只用于本文的默认构造、拷贝构造和移动构造。一般情况下，用户没有定义这三个函数的话编译器会隐式声明一个对应的函数（具体条件需读下文了解），编译器隐式声明函数并非一定添加代码，所以又分为平凡的和非平凡的，平凡的对应函数表示编译器不会添加任何代码，非平凡的表示编译器为了满足编译需求会添加一定代码。所以非平凡的对应函数又成为隐式定义的函数。其大致关系如下图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    default_ctor[函数]--&gt; man_ctor[用户声明与定义]</span><br><span class="line">    default_ctor[函数]--&gt; auto_ctor[隐式声明]</span><br><span class="line">    auto_ctor--&gt;trivial(trivial 平凡:没有添加)</span><br><span class="line">    auto_ctor--&gt;no_trivial(no-trivial 非平凡的/隐式定义: 编译器会添加代码,生成函数)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h2><h3 id="默认构造函数定义"><a href="#默认构造函数定义" class="headerlink" title="默认构造函数定义"></a>默认构造函数定义</h3><p>默认构造函数是可以无实参调用的构造函数。<br>从定义上看我们知道形如 <code>MyClass()</code>的函数为默认构造函数，其中<code>MyClass</code>是类名，默认构造函数可以是自己定义也可以是编译器自动生成。</p>
+<h3 id="隐式声明"><a href="#隐式声明" class="headerlink" title="隐式声明"></a>隐式声明</h3><p>若不对类类型（struct、class 或 union）提供任何用户声明的构造函数，则编译器将始终声明一个作为其类的 inline public 成员的默认构造函数。</p>
+<h3 id="平凡构造函数"><a href="#平凡构造函数" class="headerlink" title="平凡构造函数"></a>平凡构造函数</h3><p>  平凡构造函数编译器不会做任何事情。</p>
+<h3 id="隐式定义-非平凡默认构造函数的情况"><a href="#隐式定义-非平凡默认构造函数的情况" class="headerlink" title="隐式定义&#x2F;非平凡默认构造函数的情况"></a>隐式定义&#x2F;非平凡默认构造函数的情况</h3><ul>
+<li><p>类中有带有默认构造函数的对象成员<br>类中成员对象若带有默认构造函数，那么为了调用成员对象的默认构造，编译器必须生成部分代码来调用其成员对象的默认构造：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Class S&#123;</span><br><span class="line">    public:</span><br><span class="line">    int x,y;</span><br><span class="line">    S()&#123; x = 0; y = 0;&#125; // 自己定义的默认构造函数</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Class F&#123;</span><br><span class="line">    public:</span><br><span class="line">    S a;    // 对象a为类F的成员对象</span><br><span class="line">    int i;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>如上所示，类S有用户定义的默认构造函数<code>S()</code>,类F用户并没有定义其默认构造函数，这时候编译器会生成一个 no-trivail默认构造函数，看起来像这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// c++ 伪代码</span><br><span class="line">inline F::F()&#123;</span><br><span class="line">    a.S::S(); // 调用S 类的默认构造函数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那如果用户定义了F类的(默认)构造函数，如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class F&#123;</span><br><span class="line">    public:</span><br><span class="line">    S a;    // 对象a为类F的成员对象</span><br><span class="line">    int i;</span><br><span class="line">    F()&#123; i = 0;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>还会调用a成员对象的默认构造函数吗？答案是：yes。编译器会自动为你的(默认)构造函数添加代码进行扩张，扩张后的代码如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// c++ 伪代码</span><br><span class="line">F::F()&#123;</span><br><span class="line">    a.S::S(); // 调用S 类的默认构造函数</span><br><span class="line">    i = 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总之，如果若类成员对象有非平凡（no-trivial）默认构造函数，则编译器会“想尽办法（添加代码）”调用其成员对象的默认构造函数。</p>
+</li>
+<li><p>基类有非平凡默认构造函数<br>与成员对象含有非平凡构造函数类似，其基类含有非平凡的默认构造函数时，编译器也会生成非平凡默认构造函数，并调用基类的非平凡默认构造函数；当用户定义了(默认)构造函数时，编译器也会对其进行扩张，来调用基类的非平凡默认构造函数</p>
+</li>
+<li><p>带有虚函数(virtual function)的类或继承自带有虚函数的类<br>满足这个条件的类，会有如下两个扩张行动在编译时期发生：</p>
+<ol>
+<li>一个虚函数表会被编译出来，内存有虚函数地址指针</li>
+<li>每个类对象中会有一个虚函数指针（vptr）被合成出来，存有虚函数表地址。</li>
+</ol>
+<p>所以这就需要对vptr的值进行设置，而此时编译器就会生成一个非平凡默认构造函数，来对vptr进行设置；同理，如果用户定义了（默认）构造函数，也会对其进行扩张。</p>
+</li>
+<li><p>虚拟继承的类（菱形继承）<br>使用visual Base Class 的类，能够实现基类的数据值共享，这就需要编译器产生一个指向基类数据的指针，与vptr类似，其数据指针也需要在默认构造函数中进行设置；或在自己定义的（默认）构造函数中进行扩张。</p>
+</li>
+</ul>
+<hr>
+<h2 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h2><h3 id="拷贝构造函数调用场景"><a href="#拷贝构造函数调用场景" class="headerlink" title="拷贝构造函数调用场景"></a>拷贝构造函数调用场景</h3><p>拷贝构造函数的调用场合有三种：</p>
+<ol>
+<li>以一个对象初始化另一个对象如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class MyClass&#123;......&#125;;</span><br><span class="line">MyClass a;</span><br><span class="line">MyClass b = a; // 对象初始化</span><br></pre></td></tr></table></figure></li>
+<li>函数参数的对象传递<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// MyClass b;</span><br><span class="line">// void fun(MyClass a);</span><br><span class="line">fun(b); // 将对象b作为参数传入fun</span><br></pre></td></tr></table></figure></li>
+<li>作为参数的返回值（无移动构造函数）<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MyClass fun()&#123; </span><br><span class="line"> MyClass b; </span><br><span class="line"> ......</span><br><span class="line"> return b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="拷贝构造函数语法"><a href="#拷贝构造函数语法" class="headerlink" title="拷贝构造函数语法"></a>拷贝构造函数语法</h3><p>形如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyClass(const MyClass &amp; t) &#123;...... &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="隐式声明-1"><a href="#隐式声明-1" class="headerlink" title="隐式声明"></a>隐式声明</h3><p>拷贝构造函数可以用用户定义也可以编译器自己生成。<br>若不对类类型（struct、class 或 union）提供任何用户定义的复制构造函数，则编译器始终会声明一个复制构造函数，作为其类的非 explicit 的 inline public 成员。<br>同默认构造函数一样，编译器产生的拷贝构造函数也分trivial 和no-trivial 拷贝构造函数。编译器只有需要生成非平凡拷贝构造函数的时候才会生成，否则的话就是平凡的拷贝构造函数。</p>
+<h3 id="平凡（trivial）拷贝构造"><a href="#平凡（trivial）拷贝构造" class="headerlink" title="平凡（trivial）拷贝构造"></a>平凡（trivial）拷贝构造</h3><p>  平凡拷贝构造会进行按位拷贝（Bitwise copy），类似于memcpy。当然，虽然有时按位拷贝能够满足编译器的需求，但是未必满足用户需求，比如类中定义指针，进行拷贝构造的时候会产生两个对象中的成员指针指向同一个字符串。</p>
+<h3 id="隐式定义的拷贝构造-非平凡拷贝构造"><a href="#隐式定义的拷贝构造-非平凡拷贝构造" class="headerlink" title="隐式定义的拷贝构造&#x2F;非平凡拷贝构造"></a>隐式定义的拷贝构造&#x2F;非平凡拷贝构造</h3><p>  有时候按位拷贝不能满足编译器需要（无法完成语义的需求），需要编译器生成一个非平凡的拷贝构造函数。什么情况下会出现这种状况呢？</p>
+<ol>
+<li>类成员对象中有非平凡拷贝构造</li>
+<li>继承一个有非平凡拷贝构造函数的基类</li>
+<li>类中有虚函数</li>
+<li>虚拟继承</li>
+</ol>
+<p>  这四个条件与默认构造函数类似，解释也类似。第1、2种情况就不做解释，详细解释第3、4的场景。<br>  在类中存在虚函数时，如下<br>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Base&#123;</span><br><span class="line">  public:</span><br><span class="line">    int a;</span><br><span class="line">    virtual void f()&#123;cout&lt;&lt; &quot;base f&quot;;&#125;</span><br><span class="line">&#125;;</span><br><span class="line">class Derived: public Base&#123;</span><br><span class="line">  public:</span><br><span class="line">    int b;</span><br><span class="line">    void f() override &#123;cout&lt;&lt; &quot;derived f&quot;;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><br>  代码所示，类Derived继承了Base,并复写了虚函数f,那么类Base与类Derived的对象中各有一个虚函数表指针，指向各自类的虚函数表，考虑如下代码：<br>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Derived d;</span><br><span class="line">Base b = d;  // 用Derived类d对象初始化Base类对象，会发生切割行为</span><br><span class="line">b.f();  // 输出：base f</span><br></pre></td></tr></table></figure><br>  这种操作是合法的，但是会发生切割行为，但是这个时候如果发生按位拷贝，那么对象d中的vptr会拷贝给b，这样b调用虚函数时候则无法找到类Base的虚函数表。所以编译器为保证语法的合理性，为此生成一个拷贝构造函数，显示指定vptr的值。<br>  同理，虚拟继承会产生指向共同继承类的指针，子类赋值初始化时，编译器必须生成拷贝构造函数设置指针的偏移等。</p>
+<hr>
+<h2 id="移动构造函数"><a href="#移动构造函数" class="headerlink" title="移动构造函数"></a>移动构造函数</h2><p>移动构造函数与拷贝构造类似，不同的是初始化对象带有移动语义，不再详细分析，以下均来自cpprefference。</p>
+<h3 id="移动构造函数调用场景"><a href="#移动构造函数调用场景" class="headerlink" title="移动构造函数调用场景"></a>移动构造函数调用场景</h3><p>当（以直接初始化或复制初始化）从同类型的右值（亡值或纯右值） (C++17 前)亡值 (C++17 起)初始化对象时，调用移动构造函数，情况包括</p>
+<ol>
+<li>以一个对象初始化另一个对象如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class MyClass&#123;......&#125;;</span><br><span class="line">MyClass a;</span><br><span class="line">MyClass b = std::move(a); // 对象初始化</span><br></pre></td></tr></table></figure></li>
+<li>函数参数的对象传递<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// MyClass b;</span><br><span class="line">// void fun(MyClass a);</span><br><span class="line">fun(std::move(b)); // 将对象b作为参数传入fun</span><br></pre></td></tr></table></figure></li>
+<li>作为参数的返回值，有移动构造函数<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MyClass fun()&#123; </span><br><span class="line"> MyClass b; </span><br><span class="line"> ......</span><br><span class="line"> return b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="移动构造函数语法"><a href="#移动构造函数语法" class="headerlink" title="移动构造函数语法"></a>移动构造函数语法</h3><p>形如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyClass(const MyClass &amp;&amp; t) &#123;...... &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="隐式声明的移动构造函数（编译器会自动生成的）"><a href="#隐式声明的移动构造函数（编译器会自动生成的）" class="headerlink" title="隐式声明的移动构造函数（编译器会自动生成的）"></a>隐式声明的移动构造函数（编译器会自动生成的）</h3><p>若不对类类型（struct、class 或 union）提供任何用户定义的移动构造函数，且下列各项均为真：</p>
+<ul>
+<li>没有用户声明的复制构造函数；</li>
+<li>没有用户声明的复制赋值运算符；</li>
+<li>没有用户声明的移动赋值运算符；</li>
+<li>没有用户声明的析构函数；</li>
+</ul>
+<p>隐式声明的移动构造函数并未因为下一节所详述的条件而被定义为弃置的 (C++14 前)，则编译器将声明一个移动构造函数，作为其类的非 explicit 的 inline public 成员，签名为 T::T(T&amp;&amp;)。</p>
+<h3 id="弃置的隐式声明的移动构造函数（不会产生移动构造函数）"><a href="#弃置的隐式声明的移动构造函数（不会产生移动构造函数）" class="headerlink" title="弃置的隐式声明的移动构造函数（不会产生移动构造函数）"></a>弃置的隐式声明的移动构造函数（不会产生移动构造函数）</h3><p>若下列任何一项为真，则类 T 的隐式声明或预置的移动构造函数被定义为弃置的：</p>
+<ul>
+<li>T 拥有无法移动（拥有被弃置、不可访问或有歧义的移动构造函数）的非静态数据成员；</li>
+<li>T 拥有无法移动（拥有被弃置、不可访问或有歧义的移动构造函数）的直接或虚基类；</li>
+<li>T 拥有带被弃置或不可访问的析构函数的直接或虚基类；</li>
+<li>T 是联合式的类，且拥有带非平凡移动构造函数的变体成员；</li>
+<li>T 拥有非静态数据成员或直接或虚基类，它无法平凡复制且没有移动构造函数。 (C++14 前)</li>
+</ul>
+<p>重载决议忽略被弃置的隐式声明的移动构造函数（否则它会阻止从右值复制初始化）。 (C++14 起) </p>
+<h3 id="平凡移动构造函数"><a href="#平凡移动构造函数" class="headerlink" title="平凡移动构造函数"></a>平凡移动构造函数</h3><p>当下列各项全部为真时，类 T 移动构造函数为平凡的：</p>
+<ul>
+<li>它不是用户提供的（即它是隐式定义或预置的）；</li>
+<li>T 没有虚成员函数；</li>
+<li>T 没有虚基类；</li>
+<li>为 T 的每个直接基类选择的移动构造函数都是平凡的；</li>
+<li>为 T 的每个类类型（或类类型数组）的非静态成员选择的移动构造函数都是平凡的；</li>
+</ul>
+<p>T 没有 volatile 限定类型的非静态数据成员。 (C++14 起)<br><strong>平凡移动构造函数是与平凡复制构造函数实施相同动作的构造函数</strong>，即它如同用 std::memmove 来进行对象表示的复制。所有与 C 兼容的数据类型（POD 类型）均为可平凡移动的。</p>
+<h3 id="隐式定义的移动构造函数（非平凡移动构造函数）"><a href="#隐式定义的移动构造函数（非平凡移动构造函数）" class="headerlink" title="隐式定义的移动构造函数（非平凡移动构造函数）"></a>隐式定义的移动构造函数（非平凡移动构造函数）</h3><p>若隐式声明的移动构造函数既未弃置亦非平凡，则当其被 ODR 式使用时，它为编译器所定义（生成并编译函数体）。对于 union 类型，隐式定义的移动构造函数（如同以 std::memmove）复制其对象表示。对于非联合类类型（class 与 struct），移动构造函数用以亡值实参执行的直接初始化，按照初始化顺序，对对象的各基类和非静态成员进行完整的逐对象移动。若它满足对于 constexpr 构造函数的要求，则生成的移动构造函数为 constexpr。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>如果用户没有定义这些函数，则编译器会隐式声明一个函数</li>
+<li>在编译器需要的情况下（如带有虚函数，虚拟继承等等），会隐式定义函数，这时函数为非平凡的(no-trivial)；否则则编译器不会添加代码来定义一个函数，这时的函数为平凡的（trivial）</li>
+<li>移动构造隐式声明的条件比较苛刻，不但与用户定义的移动构造有关，还与用户复制构造等有关。</li>
+<li>平凡的默认构造什么也不做；平凡的拷贝构造和平凡的移动构造操作是相同的，进行按位拷贝。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">zhangjiwei</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/09/06/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E3%80%81%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">http://example.com/2023/09/06/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E3%80%81%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/09/06/c-%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%E5%AE%9E%E7%8E%B0%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" title="c++ 条件变量实现生产者消费者"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">c++ 条件变量实现生产者消费者</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zhangjiwei</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%EF%BC%8C%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%EF%BC%8C%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">默认构造，拷贝构造，移动构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="toc-number">1.2.</span> <span class="toc-text">名词解释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">默认构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">默认构造函数定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E"><span class="toc-number">1.3.2.</span> <span class="toc-text">隐式声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%87%A1%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.3.</span> <span class="toc-text">平凡构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%AE%9A%E4%B9%89-%E9%9D%9E%E5%B9%B3%E5%87%A1%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-number">1.3.4.</span> <span class="toc-text">隐式定义&#x2F;非平凡默认构造函数的情况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.4.</span> <span class="toc-text">拷贝构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">拷贝构造函数调用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E6%B3%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">拷贝构造函数语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E-1"><span class="toc-number">1.4.3.</span> <span class="toc-text">隐式声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%87%A1%EF%BC%88trivial%EF%BC%89%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0"><span class="toc-number">1.4.4.</span> <span class="toc-text">平凡（trivial）拷贝构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0-%E9%9D%9E%E5%B9%B3%E5%87%A1%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0"><span class="toc-number">1.4.5.</span> <span class="toc-text">隐式定义的拷贝构造&#x2F;非平凡拷贝构造</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.5.</span> <span class="toc-text">移动构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.5.1.</span> <span class="toc-text">移动构造函数调用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E6%B3%95"><span class="toc-number">1.5.2.</span> <span class="toc-text">移动构造函数语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E%E7%9A%84%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%88%E7%BC%96%E8%AF%91%E5%99%A8%E4%BC%9A%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E7%9A%84%EF%BC%89"><span class="toc-number">1.5.3.</span> <span class="toc-text">隐式声明的移动构造函数（编译器会自动生成的）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%83%E7%BD%AE%E7%9A%84%E9%9A%90%E5%BC%8F%E5%A3%B0%E6%98%8E%E7%9A%84%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%88%E4%B8%8D%E4%BC%9A%E4%BA%A7%E7%94%9F%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-number">1.5.4.</span> <span class="toc-text">弃置的隐式声明的移动构造函数（不会产生移动构造函数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E5%87%A1%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.5.5.</span> <span class="toc-text">平凡移动构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%AE%9A%E4%B9%89%E7%9A%84%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%88%E9%9D%9E%E5%B9%B3%E5%87%A1%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-number">1.5.6.</span> <span class="toc-text">隐式定义的移动构造函数（非平凡移动构造函数）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/06/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E3%80%81%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" title="深入了解默认构造、拷贝构造、移动构造函数">深入了解默认构造、拷贝构造、移动构造函数</a><time datetime="2023-09-06T14:36:00.000Z" title="Created 2023-09-06 10:36:00">2023-09-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/06/c-%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%E5%AE%9E%E7%8E%B0%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" title="c++ 条件变量实现生产者消费者">c++ 条件变量实现生产者消费者</a><time datetime="2023-09-06T13:39:01.000Z" title="Created 2023-09-06 09:39:01">2023-09-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/04/C-%E6%97%B6%E9%97%B4%E5%BA%93-chrono/" title="C++时间库 chrono">C++时间库 chrono</a><time datetime="2023-09-04T15:17:41.000Z" title="Created 2023-09-04 11:17:41">2023-09-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/03/my-first-aticle/" title="my first aticle">my first aticle</a><time datetime="2023-09-03T13:50:34.000Z" title="Created 2023-09-03 09:50:34">2023-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/03/hello-world/" title="Hello World">Hello World</a><time datetime="2023-09-03T13:36:36.600Z" title="Created 2023-09-03 09:36:36">2023-09-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By zhangjiwei</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
